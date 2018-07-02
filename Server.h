@@ -2,17 +2,18 @@
 
 #include "Packet.h"
 #include "Http_conn.h"
-
-#define MAXFDS 1000
+#include "Reactor/EventLoop.h"
 
 class Server{
 private:
-	int listenfd,epfd;
-	SE events[MAXFDS];
-	Http_conn http_conn[MAXFDS];
+	SP_EventLoop loop;
+	SP_Channel serverchannel;
+	int listenfd;
+	std::unordered_map<int,SP_Http_conn> Httpmap;	
+	void handleconn();
+
 public:
 	Server(int port);
 	~Server();
-	void start();
-	
+	void start();	
 };

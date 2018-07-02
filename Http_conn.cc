@@ -8,8 +8,10 @@ void Http_conn::init(){
 	header.clear();
 }
 
-Http_conn::Http_conn(){
+Http_conn::Http_conn(SP_Channel channel){
 	init();
+	sockfd=channel->getFd();
+	channel->setReadhandler(bind(&Http_conn::parse,this));
 }
 
 Http_conn::~Http_conn(){

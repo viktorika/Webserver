@@ -2,6 +2,7 @@
 
 #include "Packet.h"
 #include "Mimetype.h"
+#include "Reactor/Channel.h"
 #include <string>
 #include <unordered_map>
 #include <iostream>
@@ -33,9 +34,11 @@ private:
 	bool Read(string &msg,string str);
 	void init();
 public:
-	Http_conn();
+	Http_conn(SP_Channel channel);
 	~Http_conn();
 	void setsockfd(int sockfd);
 	void parse();
 	void send();	
 };
+
+typedef shared_ptr<Http_conn> SP_Http_conn;

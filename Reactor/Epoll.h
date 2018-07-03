@@ -9,21 +9,19 @@
 
 #define MAXFDS 10000
 #define EVENTS 4096
-
-using namespace std;
-
+#define EPOLLWAIT_TIME 10000
 
 class Epoll{
 private:
 	int epollfd;
-	vector<SE> events;
-	unordered_map<int,SP_Channel>Channelmap;
+	std::vector<SE> events;
+	std::unordered_map<int,SP_Channel>Channelmap;
 public:
 	Epoll();
 	void add(SP_Channel request);
 	void update(SP_Channel request);
 	void del(SP_Channel request);
-	vector<SP_Channel> poll();
+	std::vector<SP_Channel> poll();
 };
 
-typedef shared_ptr<Epoll> SP_Epoll;
+typedef std::shared_ptr<Epoll> SP_Epoll;

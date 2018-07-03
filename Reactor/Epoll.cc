@@ -9,7 +9,6 @@ Epoll::Epoll()
 void Epoll::add(SP_Channel request){
 	Channelmap[request->getFd()]=request;
 	int fd=request->getFd();
-	//计时功能以后再加
 	SE ev;
 	ev.events=request->getRevents();
 	ev.data.fd=fd;
@@ -34,7 +33,7 @@ void Epoll::del(SP_Channel request){
 }
 
 vector<SP_Channel> Epoll::poll(){//返回值的方式有待改进，以后再改
-	int nfds=epoll_wait(epollfd,&*events.begin(),EVENTS,-1);
+	int nfds=epoll_wait(epollfd,&*events.begin(),EVENTS,EPOLLWAIT_TIME);
 	vector<SP_Channel> req;
 	for(int i=0;i<nfds;++i){
 		int fd=events[i].data.fd;

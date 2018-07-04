@@ -1,15 +1,18 @@
 #include "Channel.h"
 
 void Channel::setReadhandler(CallBack &&readHandler){
-	readhandler=readHandler;
+	readhandler=std::move(readHandler);
+	//readhandler=readHandler;
 }
 
 void Channel::setWritehandler(CallBack &&writeHandler){
-	writehandler=writeHandler;
+	writehandler=std::move(writeHandler);
+	//writehandler=writeHandler;
 }
 
 void Channel::setClosehandler(CallBack &&closeHandler){
-	closehandler=closeHandler;
+	closehandler=std::move(closeHandler);
+	//closehandler=closeHandler;
 }
 
 void Channel::setDeleted(bool Deleted){

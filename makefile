@@ -1,5 +1,6 @@
-Webserver:main.o Server.o Http_conn.o Mimetype.o Packet.o EventLoop.o Epoll.o Channel.o TimerManager.o
-	g++ -std=c++11 -o Webserver main.o Server.o Http_conn.o Mimetype.o Packet.o EventLoop.o Epoll.o Channel.o TimerManager.o -lpthread	
+Webserver:main.o Server.o Http_conn.o Mimetype.o Packet.o EventLoop.o Epoll.o Channel.o TimerManager.o Threadpoll.o Thread.o
+	g++ -std=c++11 -o Webserver main.o Server.o Http_conn.o Mimetype.o Packet.o EventLoop.o Epoll.o Channel.o TimerManager.o Threadpoll.o Thread.o -lpthread	
+
 main.o:main.cc
 	g++ -std=c++11 -g -c main.cc
 
@@ -23,6 +24,12 @@ Channel.o:Reactor/Channel.h Reactor/Channel.cc
 
 TimerManager.o:Reactor/TimerManager.h Reactor/TimerManager.cc
 	g++ -std=c++11 -g -c Reactor/TimerManager.cc
+
+Threadpoll.o:Threadpoll/Threadpoll.h Threadpoll/Threadpoll.cc
+	g++ -std=c++11 -g -c Threadpoll/Threadpoll.cc
+
+Thread.o:Threadpoll/Thread.h Threadpoll/Thread.cc
+	g++ -std=c++11 -g -c Threadpoll/Thread.cc
 
 Packet.o:Packet.cc Packet.h
 	g++ -std=c++11 -g -c Packet.cc

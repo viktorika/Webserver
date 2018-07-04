@@ -26,6 +26,7 @@ private:
 	int pos;
 	string inbuffer;
 	string outbuffer;
+	string storage;
 	string path;
 	METHOD method;
 	HTTPVERSION version;
@@ -35,7 +36,8 @@ private:
 	HEADERSTATE parseHeader();
 	//CONTENTSTATE parseContent();
 	bool Read(string &msg,string str);
-	void init();
+	void initread();
+	void initwrite();
 public:
 	Http_conn(SP_Channel channel);
 	~Http_conn();

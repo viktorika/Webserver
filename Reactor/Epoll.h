@@ -9,7 +9,7 @@
 
 #define MAXFDS 10000
 #define EVENTS 4096
-#define EPOLLWAIT_TIME 10000
+#define EPOLLWAIT_TIME 2000
 
 class Epoll{
 private:
@@ -21,7 +21,7 @@ public:
 	void add(SP_Channel request);
 	void update(SP_Channel request);
 	void del(SP_Channel request);
-	std::vector<SP_Channel> poll();
+	void poll(std::vector<SP_Channel> &req);
 };
 
 typedef std::shared_ptr<Epoll> SP_Epoll;

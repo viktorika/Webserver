@@ -73,18 +73,23 @@ char favicon[555] = {
   'B', '\x60', '\x82',
 };//favicon图片,参考其他github直接拷贝的．
 
-void Http_conn::init(){
+void Http_conn::initread(){
 	pos=0;
 	inbuffer="";
+}
+
+void Http_conn::initwrite(){
 	outbuffer="";
-	path="index.html";//默认路径
+	path="";
 	header.clear();
 }
 
 Http_conn::Http_conn(SP_Channel Channel)
-:	channel(Channel)
+:	channel(Channel),
+	storage("page/")
 {
-	init();
+	initread();
+	initwrite();
 	channel->setReadhandler(bind(&Http_conn::parse,this));
 	channel->setWritehandler(bind(&Http_conn::send,this));
 }
@@ -150,35 +155,45 @@ void Http_conn::parse(){
 	if(readsum<0){
 		perror("read error");
 		parsestate=PARSE_ERROR;
-		init();
+		initread();
 		return;
 	}
 	else if(!readsum){
 		channel->setDeleted(true);
+		channel->getLoop()->addTimer(channel,0);
 		return;
 	}
 	if(parseMethod()==PARSE_METHOD_ERROR){
 		perror("parse method error");
 		parsestate=PARSE_ERROR;
-		init();
+		initread();
 		return;
 	}
 	if(parseHeader()==PARSE_HEADER_ERROR){
 		perror("parse header error");
 		parsestate=PARSE_ERROR;
-		init();
+		initread();
 		return;
 	}
+	initread();
+	channel->setRevents(EPOLLOUT|EPOLLET);
+	channel->getLoop()->updatePoller(channel);
+}
+
+void Http_conn::send(){
 	if(METHOD_POST==method){
-		//暂时不处理
+
 	}
 	else if(METHOD_GET==method){
 		if(HTTP_11==version&&header.find("Connection")!=header.end()&&("Keep-Alive"==header["Connection"]||"keep-alive"==header["Connection"])){
 			outbuffer="HTTP/1.1 200 OK\r\n";
 			outbuffer+=string("Connection: Keep-Alive\r\n")+"Keep-Alive: timeout="+to_string(DEFAULT_KEEP_ALIVE_TIME)+"\r\n";
+			channel->getLoop()->addTimer(channel,DEFAULT_KEEP_ALIVE_TIME);
 		}
-		else
+		else{
 			outbuffer="HTTP/1.0 200 OK\r\n";
+			channel->getLoop()->addTimer(channel,0);
+		}
 		int dot_pos=path.find('.');
 		string filetype;
 		if(string::npos==dot_pos)
@@ -194,7 +209,7 @@ void Http_conn::parse(){
 		}
 		else{
 			struct stat sbuf;
-			if(stat(path.c_str(),&sbuf)<0){
+			if(stat((storage+path).c_str(),&sbuf)<0){
 				perror("no file");
 				parsestate=PARSE_ERROR;
 				return;
@@ -203,7 +218,7 @@ void Http_conn::parse(){
 			outbuffer += "Content-Length: " + to_string(sbuf.st_size) + "\r\n";
         	outbuffer += "Server: WWQ's Web Server\r\n";
 			outbuffer += "\r\n";
-			int src_fd=open(path.c_str(),O_RDONLY,0);
+			int src_fd=open((storage+path).c_str(),O_RDONLY,0);
 			if(src_fd<0){
 				perror("open file failed");
 				return;
@@ -213,20 +228,12 @@ void Http_conn::parse(){
 			outbuffer+=string(src_addr,src_addr+sbuf.st_size);
 			munmap(src_addr,sbuf.st_size);
 		}
-		channel->setRevents(EPOLLOUT|EPOLLET);
-		channel->getLoop()->updatePoller(channel);
 	}
-	else{
-		parsestate=PARSE_ERROR;
-	}
-}
-
-void Http_conn::send(){
 	printf("write fd=%d\n",channel->getFd());
 	const char *buffer=outbuffer.c_str();
 	if(!writen(channel->getFd(),buffer,outbuffer.length()))
 		perror("writen error");
-	init();
+	initwrite();
 	channel->setRevents(EPOLLIN|EPOLLET);
-	channel->getLoop()->updatePoller(channel,DEFAULT_KEEP_ALIVE_TIME);
+	channel->getLoop()->updatePoller(channel);
 }

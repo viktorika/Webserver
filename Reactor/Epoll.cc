@@ -32,14 +32,12 @@ void Epoll::del(SP_Channel request){
 	Channelmap.erase(fd);
 }
 
-vector<SP_Channel> Epoll::poll(){//返回值的方式有待改进，以后再改
+void Epoll::poll(std::vector<SP_Channel> &req){
 	int nfds=epoll_wait(epollfd,&*events.begin(),EVENTS,EPOLLWAIT_TIME);
-	vector<SP_Channel> req;
 	for(int i=0;i<nfds;++i){
 		int fd=events[i].data.fd;
 		SP_Channel temp=Channelmap[fd];
 		temp->setEvents(events[i].events);
-		req.push_back(temp);
+		req.emplace_back(temp);
 	}
-	return req;
 }

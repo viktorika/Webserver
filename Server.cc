@@ -1,8 +1,9 @@
 #include "Server.h"
 
-Server::Server(int port)
+Server::Server(int port,int threadnum)
 :	loop(new EventLoop()),
-	serverchannel(new Channel(loop))
+	serverchannel(new Channel(loop)),
+	threadpoll(new Threadpoll(threadnum))
 {
 	listenfd=Socket(AF_INET,SOCK_STREAM,0);
     setnonblocking(listenfd);
@@ -27,17 +28,19 @@ void Server::handleconn(){
 	while((connfd=Accept(listenfd,(SA *)&cliaddr,&clilen))>=0){
 		printf("accept fd=%d\n",connfd);
 		setnonblocking(connfd);
-		SP_Channel connchannel(new Channel(loop));//暂时只用同一个loop，之后增加线程池后修改
+		SP_EventLoop nextloop=threadpoll->getNextloop();
+		SP_Channel connchannel(new Channel(nextloop));//暂时只用同一个loop，之后增加线程池后修改
 		connchannel->setFd(connfd);
 		connchannel->setRevents(EPOLLIN|EPOLLET);
 		connchannel->setClosehandler(bind(&Server::handleclose,this,connchannel));
 		SP_Http_conn connhttp(new Http_conn(connchannel));
-		loop->addPoller(connchannel,DEFAULT_KEEP_ALIVE_TIME);
 		Httpmap[connfd]=connhttp;
+		nextloop->queueInLoop(bind(&EventLoop::addPoller,nextloop.get(),connchannel));
 	}
 }
 
 void Server::start(){
+	threadpoll->start();
 	serverchannel->setRevents(EPOLLIN|EPOLLET);
 	serverchannel->setReadhandler(bind(&Server::handleconn,this));
 	loop->addPoller(serverchannel);
@@ -47,6 +50,11 @@ void Server::start(){
 
 void Server::handleclose(SP_Channel channel){
 	printf("close fd=%d\n",channel->getFd());
-	Httpmap.erase(channel->getFd());
+	//Httpmap.erase(channel->getFd());
+	loop->queueInLoop(bind(&Server::deletemap,this,channel));
 	channel->getLoop()->removePoller(channel);
+}
+
+void Server::deletemap(SP_Channel channel){
+	Httpmap.erase(channel->getFd());
 }

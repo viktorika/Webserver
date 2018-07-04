@@ -16,7 +16,7 @@ make
 
 Usage
 ----
-html页面放到page里，运行服务器：./Webserver
+page里放请求的页面，启动服务器：./Webserver [-n threadnum] [-p port]
 
 version 1:
 ----
@@ -39,3 +39,8 @@ version 4:
 ----
 * 增加了线程池模块，加大了服务器的并发性能，采用one loop per thread的机制，想参考muduo，无奈不太好理解，暂时写得比较简陋，有待以后改进．
 * 优化部分代码，提高一点性能.
+
+version 5:
+----
+* 扩展功能，支持命令行选项，-n为线程数目，-p为端口号，这里注意，我是主线程accept，其他线程处理读写操作的，所以必定有一个主线程，故-n 3表示1个主线程，3个副线程.
+* 参照UNIX网络编程，用tcp_listen代替了socket,bind,listen过程，支持IPV6.

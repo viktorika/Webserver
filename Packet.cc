@@ -79,7 +79,7 @@ ssize_t readn(int fd,std::string &inbuffer){
 			else if(EAGAIN==errno)
 				return readSum;
 			else{
-				perror("read error");
+				fprintf(stderr,"read error\n");
 				return -1;
 			}
 		}	
@@ -112,6 +112,49 @@ ssize_t writen(int fd,const void *vptr,size_t n){
 int Open(const char *pathname,int oflags,mode_t mode){
 	int n;
 	if((n=open(pathname,oflags,mode))<0)
-		perror("open file failed");
+		fprintf(stderr,"open file failed\n");
 	return n;
+}
+
+int Close(int sockfd){
+	int n;
+	if((n=close(sockfd))<0)
+		fprintf(stderr,"close sockfd error\n");
+	return n;
+}
+
+int Setsockopt(int sockfd,int level,int optname,const void *optval,socklen_t optlen){
+	int n;
+	if((n=setsockopt(sockfd,level,optname,optval,optlen))<0)
+		fprintf(stderr,"set sockopt error\n");
+	return n;
+}
+
+int tcp_listen(const char *host,const char *serv,socklen_t *addrlenp){
+	int listenfd,n;
+	const int on=1;
+	struct addrinfo hints,*res,*ressave;
+	bzero(&hints,sizeof(struct addrinfo));
+	hints.ai_flags=AI_PASSIVE;
+	hints.ai_family=AF_UNSPEC;
+	hints.ai_socktype=SOCK_STREAM;
+	if((n=getaddrinfo(host,serv,&hints,&res))!=0)
+		fprintf(stderr,"tcp_listen error\n");
+	ressave=res;
+	do{
+		listenfd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
+		if(listenfd<0)
+			continue;
+		Setsockopt(listenfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+		if(!bind(listenfd,res->ai_addr,res->ai_addrlen))
+			break;
+		Close(listenfd);
+	}while((res=res->ai_next));
+	if(!res)
+		fprintf(stderr,"tcp_listen error\n");
+	Listen(listenfd,LISTENQ);
+	if(addrlenp)
+		*addrlenp=res->ai_addrlen;
+	freeaddrinfo(ressave);
+	return listenfd;
 }

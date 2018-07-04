@@ -17,7 +17,7 @@ private:
 	void deletemap(SP_Channel channel);
 
 public:
-	Server(int port,int threadnum);
+	Server(const char * port,int threadnum);
 	~Server();
 	void start();	
 };

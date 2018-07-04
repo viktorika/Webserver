@@ -1,19 +1,12 @@
 #include "Server.h"
 
-Server::Server(int port,int threadnum)
+Server::Server(const char * port,int threadnum)
 :	loop(new EventLoop()),
 	serverchannel(new Channel(loop)),
 	threadpoll(new Threadpoll(threadnum))
 {
-	listenfd=Socket(AF_INET,SOCK_STREAM,0);
-    setnonblocking(listenfd);
-	struct sockaddr_in servaddr;
-    bzero(&servaddr,sizeof(servaddr));
-    servaddr.sin_family=AF_INET;
-    servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
-    servaddr.sin_port=htons(port);
-    Bind(listenfd,(SA *)&servaddr,sizeof(servaddr));
-    Listen(listenfd,LISTENQ);
+	listenfd=tcp_listen(NULL,port,NULL);
+	setnonblocking(listenfd);
 	serverchannel->setFd(listenfd);
 }
 

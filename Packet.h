@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string>
+#include <netdb.h>
 
 #define MAXLINE 4096 
 #define LISTENQ 2048
@@ -34,3 +35,6 @@ int Epoll_wait(int epfd,SE *events,int maxevents,int timeout);
 ssize_t readn(int fd,std::string &inbuffer);
 ssize_t writen(int fd,const void *vptr,size_t n);
 int Open(const char *pathname,int oflags,mode_t mode);
+int Close(int sockfd);
+int Setsockopt(int sockfd,int level,int optname,const void *optval,socklen_t optlen);
+int tcp_listen(const char *hostname,const char *service,socklen_t *addrlenp);

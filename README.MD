@@ -19,6 +19,7 @@ Envoirment
 	page里放请求的页面，启动服务器：./Webserver [-n threadnum] [-p port]
 
 Technical points
+----
 * 采用Reactor模式+EPOLL(ET)非阻塞IO
 * 使用小根堆+unordered_map实现定时器以关闭超时连接
 * 使用线程池参考muduo的one loop per thread的思想

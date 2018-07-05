@@ -32,7 +32,7 @@ int setnonblocking(int sockfd);
 int Epoll_create(int size);
 int Epoll_ctl(int epfd,int op,int fd,SE *event);
 int Epoll_wait(int epfd,SE *events,int maxevents,int timeout);
-ssize_t readn(int fd,std::string &inbuffer);
+ssize_t readn(int fd,std::string &inbuffer,bool &zero);
 ssize_t writen(int fd,const void *vptr,size_t n);
 int Open(const char *pathname,int oflags,mode_t mode);
 int Close(int sockfd);

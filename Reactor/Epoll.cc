@@ -6,6 +6,10 @@ Epoll::Epoll()
 	epollfd=Epoll_create(MAXFDS);
 }
 
+Epoll::~Epoll(){
+	Close(epollfd);
+}
+
 void Epoll::add(SP_Channel request){
 	Channelmap[request->getFd()]=request;
 	int fd=request->getFd();

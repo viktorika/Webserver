@@ -13,37 +13,41 @@ using namespace std;
 
 enum METHOD{METHOD_GET,METHOD_POST};
 enum HTTPVERSION{HTTP_10,HTTP_11};
-enum METHODSTATE{PARSE_METHOD_ERROR,PARSE_METHOD_SUCCESS};
-enum HEADERSTATE{PARSE_HEADER_ERROR,PARSE_HEADER_SUCCESS};
-enum PARSESTATE{PARSE_SUCCESS,PARSE_ERROR};
+enum PARSESTATE{PARSE_ERROR,PARSE_METHOD,PARSE_HEADER,PARSE_SUCCESS};
 
 class Channel;
 typedef shared_ptr<Channel> SP_Channel;
 
 class Http_conn{
 private:
+	typedef function<PARSESTATE()> CallBack;
+	CallBack handleparse[4];
 	SP_Channel channel;
+	bool keepalive;
 	int pos;
+	int size;
 	string inbuffer;
-	string outbuffer;
 	string storage;
 	string path;
+	string filetype;
 	METHOD method;
 	HTTPVERSION version;
 	PARSESTATE parsestate;
 	unordered_map<string,string>header;
-	METHODSTATE parseMethod();
-	HEADERSTATE parseHeader();
+	PARSESTATE parseMethod();
+	PARSESTATE parseHeader();
+	PARSESTATE parseError();
+	PARSESTATE parseSuccess();
 	//CONTENTSTATE parseContent();
+	void parse();
+	void send();
 	bool Read(string &msg,string str);
-	void initread();
-	void initwrite();
+	void initmsg();
+	void handleError(int errornum,string msg);
+
 public:
 	Http_conn(SP_Channel channel);
 	~Http_conn();
-	void setsockfd(int sockfd);
-	void parse();
-	void send();	
 };
 
 typedef shared_ptr<Http_conn> SP_Http_conn;

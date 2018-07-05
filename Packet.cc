@@ -68,7 +68,7 @@ int Epoll_wait(int epfd,SE *events,int maxevents,int timeout){
 	return n;
 }
 
-ssize_t readn(int fd,std::string &inbuffer){
+ssize_t readn(int fd,std::string &inbuffer,bool &zero){
 	ssize_t nread;
 	ssize_t readSum=0;
 	while(true){
@@ -83,8 +83,10 @@ ssize_t readn(int fd,std::string &inbuffer){
 				return -1;
 			}
 		}	
-		else if(!nread)
+		else if(!nread){
+			zero=true;
 			break;
+		}
 		readSum+=nread;
 		inbuffer+=std::string(buff,buff+nread);
 	}

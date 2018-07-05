@@ -18,6 +18,7 @@ private:
 	std::unordered_map<int,SP_Channel>Channelmap;
 public:
 	Epoll();
+	~Epoll();
 	void add(SP_Channel request);
 	void update(SP_Channel request);
 	void del(SP_Channel request);

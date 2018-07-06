@@ -2,17 +2,14 @@
 
 void Channel::setReadhandler(CallBack &&readHandler){
 	readhandler=std::move(readHandler);
-	//readhandler=readHandler;
 }
 
 void Channel::setWritehandler(CallBack &&writeHandler){
 	writehandler=std::move(writeHandler);
-	//writehandler=writeHandler;
 }
 
 void Channel::setClosehandler(CallBack &&closeHandler){
 	closehandler=std::move(closeHandler);
-	//closehandler=closeHandler;
 }
 
 void Channel::setDeleted(bool Deleted){
@@ -37,7 +34,7 @@ Channel::Channel(SP_EventLoop Loop)
 }
 
 Channel::~Channel(){
-	close(fd);
+	shutdown(fd,SHUT_RDWR);
 }
 void Channel::setFd(int Fd){
 	fd=Fd;

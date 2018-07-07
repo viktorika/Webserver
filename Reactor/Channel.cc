@@ -34,7 +34,7 @@ Channel::Channel(SP_EventLoop Loop)
 }
 
 Channel::~Channel(){
-	shutdown(fd,SHUT_RDWR);
+	Close(fd);
 }
 void Channel::setFd(int Fd){
 	fd=Fd;

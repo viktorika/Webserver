@@ -41,7 +41,6 @@ void Server::start(){
 }
 
 void Server::handleclose(SP_Channel channel){
-	//Httpmap.erase(channel->getFd());
 	loop->queueInLoop(bind(&Server::deletemap,this,channel));
 	channel->getLoop()->removePoller(channel);
 }

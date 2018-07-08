@@ -34,6 +34,7 @@ Channel::Channel(SP_EventLoop Loop)
 }
 
 Channel::~Channel(){
+	printf("delete fd=%d\n",fd);
 	Close(fd);
 }
 void Channel::setFd(int Fd){
@@ -60,6 +61,6 @@ bool Channel::isDeleted(){
 	return deleted;
 }
 
-SP_EventLoop Channel::getLoop(){
+WP_EventLoop Channel::getLoop(){
 	return loop;
 }

@@ -9,6 +9,7 @@ class Channel;
 class Epoll;
 class TimerManager;
 typedef std::shared_ptr<Channel> SP_Channel;
+typedef std::weak_ptr<Channel> WP_Channel;
 typedef std::shared_ptr<Epoll> SP_Epoll;
 typedef std::shared_ptr<TimerManager> SP_TimerManager;
 
@@ -34,3 +35,4 @@ public:
 };
 
 typedef std::shared_ptr<EventLoop> SP_EventLoop;
+typedef std::weak_ptr<EventLoop> WP_EventLoop;

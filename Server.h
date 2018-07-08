@@ -13,7 +13,7 @@ private:
 	int listenfd;
 	std::unordered_map<int,SP_Http_conn> Httpmap;	
 	void handleconn();
-	void handleclose(SP_Channel channel); 
+	void handleclose(WP_Channel channel); 
 	void deletemap(SP_Channel channel);
 
 public:

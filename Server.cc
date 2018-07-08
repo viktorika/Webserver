@@ -19,15 +19,17 @@ void Server::handleconn(){
 	socklen_t clilen=sizeof(cliaddr);
 	int connfd;
 	while((connfd=Accept(listenfd,(SA *)&cliaddr,&clilen))>=0){
+		printf("accepet fd=%d\n",connfd);
 		setnonblocking(connfd);
 		SP_EventLoop nextloop=threadpoll->getNextloop();
-		SP_Channel connchannel(new Channel(nextloop));//暂时只用同一个loop，之后增加线程池后修改
+		SP_Channel connchannel(new Channel(nextloop));
 		connchannel->setFd(connfd);
 		connchannel->setRevents(EPOLLIN|EPOLLET);
-		connchannel->setClosehandler(bind(&Server::handleclose,this,connchannel));
+		WP_Channel wpchannel=connchannel;
+		connchannel->setClosehandler(bind(&Server::handleclose,this,wpchannel));
 		SP_Http_conn connhttp(new Http_conn(connchannel));
 		Httpmap[connfd]=move(connhttp);
-		nextloop->queueInLoop(bind(&EventLoop::addPoller,nextloop.get(),connchannel));
+		nextloop->queueInLoop(bind(&EventLoop::addPoller,nextloop.get(),move(connchannel)));
 	}
 }
 
@@ -40,9 +42,10 @@ void Server::start(){
 	loop->loop();
 }
 
-void Server::handleclose(SP_Channel channel){
-	loop->queueInLoop(bind(&Server::deletemap,this,channel));
-	channel->getLoop()->removePoller(channel);
+void Server::handleclose(WP_Channel channel){
+	SP_Channel spchannel=channel.lock();
+	loop->queueInLoop(bind(&Server::deletemap,this,spchannel));
+	spchannel->getLoop().lock()->removePoller(spchannel);
 }
 
 void Server::deletemap(SP_Channel channel){

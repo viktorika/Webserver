@@ -93,14 +93,14 @@ PARSESTATE Http_conn::parseError(){
 	initmsg();
 	header.clear();
 	channel->setRevents(EPOLLOUT|EPOLLET);
-	channel->getLoop()->updatePoller(channel);
+	channel->getLoop().lock()->updatePoller(channel);
 	channel->setWritehandler(bind(&Http_conn::handleError,this,400,"Bad Request"));
 	return PARSE_METHOD;
 }
 
 PARSESTATE Http_conn::parseSuccess(){
 	channel->setRevents(EPOLLOUT|EPOLLET);
-	channel->getLoop()->updatePoller(channel);
+	channel->getLoop().lock()->updatePoller(channel);
 	inbuffer=inbuffer.substr(pos+2);
 	pos=0;
 	if(HTTP_11==version&&header.find("Connection")!=header.end()&&("Keep-Alive"==header["Connection"]||"keep-alive"==header["Connection"]))
@@ -119,10 +119,10 @@ void Http_conn::parse(){
 	bool zero=false;
     int readsum=readn(channel->getFd(),inbuffer,zero);
     if(readsum<0||zero){
-        perror("read RST or FIN");
         initmsg();
         channel->setDeleted(true);
-        channel->getLoop()->addTimer(channel,0);
+        channel->getLoop().lock()->addTimer(channel,0);
+		return;
         //读到RST和FIN默认FIN处理方式，这里的话因为我不太清楚读到RST该怎么处理，就一起这样处理好了
     }
 	while(inbuffer.length()&&~inbuffer.find("\r\n",pos))
@@ -138,11 +138,11 @@ void Http_conn::send(){
 		if(keepalive){
 			outbuffer="HTTP/1.1 200 OK\r\n";
 			outbuffer+=string("Connection: Keep-Alive\r\n")+"Keep-Alive: timeout="+to_string(DEFAULT_KEEP_ALIVE_TIME)+"\r\n";
-			channel->getLoop()->addTimer(channel,DEFAULT_KEEP_ALIVE_TIME);
+			channel->getLoop().lock()->addTimer(channel,DEFAULT_KEEP_ALIVE_TIME);
 		}
 		else{
 			outbuffer="HTTP/1.0 200 OK\r\n";
-			channel->getLoop()->addTimer(channel,0);
+			channel->getLoop().lock()->addTimer(channel,0);
 		}
 		outbuffer += "Content-Type: " + filetype + "\r\n";
 		outbuffer += "Content-Length: " + to_string(size) + "\r\n";
@@ -150,7 +150,7 @@ void Http_conn::send(){
 		outbuffer += "\r\n";
 		int src_fd=Open((storage+path).c_str(),O_RDONLY,0);
 		char *src_addr=(char *)mmap(NULL,size,PROT_READ,MAP_PRIVATE,src_fd,0);
-		close(src_fd);
+		Close(src_fd);
 		outbuffer+=string(src_addr,src_addr+size);
 		munmap(src_addr,size);
 	}
@@ -159,7 +159,7 @@ void Http_conn::send(){
 		perror("writen error");
 	initmsg();
 	channel->setRevents(EPOLLIN|EPOLLET);
-	channel->getLoop()->updatePoller(channel);
+	channel->getLoop().lock()->updatePoller(channel);
 }
 
 void Http_conn::handleError(int errornum,string msg){//暂时统一用400,Bad Request来处理,留接口可在上层修改错误码和错误信息
@@ -179,5 +179,5 @@ void Http_conn::handleError(int errornum,string msg){//暂时统一用400,Bad Re
     if(!writen(channel->getFd(),buffer,outbuffer.length()))
         perror("writen error");
     channel->setRevents(EPOLLIN|EPOLLET);
-    channel->getLoop()->updatePoller(channel);
+    channel->getLoop().lock()->updatePoller(channel);
 }

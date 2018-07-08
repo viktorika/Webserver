@@ -3,7 +3,7 @@
 typedef struct timeval ST;
 
 TimerNode::TimerNode(SP_Channel Channel,int timeout)
-:	channel(Channel)
+:	channel((Channel))
 {
 	ST now;
 	gettimeofday(&now,NULL);
@@ -44,7 +44,7 @@ SP_Channel TimerNode::getChannel(){
 void TimerManager::addTimer(SP_Channel channel,int timeout){
 	SP_TimerNode timernode(new TimerNode(channel,timeout));;
 	timerheap.push(timernode);
-	timermap[channel->getFd()]=timernode;
+	timermap[channel->getFd()]=std::move(timernode);
 }
 
 void TimerManager::handleExpiredEvent(){

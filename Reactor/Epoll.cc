@@ -11,12 +11,12 @@ Epoll::~Epoll(){
 }
 
 void Epoll::add(SP_Channel request){
-	Channelmap[request->getFd()]=request;
 	int fd=request->getFd();
 	SE ev;
 	ev.events=request->getRevents();
 	ev.data.fd=fd;
-	Epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&ev);	
+	Epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&ev);
+	Channelmap[fd]=move(request);	
 }
 
 void Epoll::update(SP_Channel request){
@@ -42,6 +42,6 @@ void Epoll::poll(std::vector<SP_Channel> &req){
 		int fd=events[i].data.fd;
 		SP_Channel temp=Channelmap[fd];
 		temp->setEvents(events[i].events);
-		req.emplace_back(temp);
+		req.emplace_back(std::move(temp));
 	}
 }

@@ -10,31 +10,31 @@ EventLoop::EventLoop()
 }
 
 void EventLoop::addPoller(SP_Channel channel){
-	poller->add(channel);
+	poller->add(std::move(channel));
 }
 
 void EventLoop::updatePoller(SP_Channel channel){
-	poller->update(channel);
+	poller->update(std::move(channel));
 }
 
 void EventLoop::removePoller(SP_Channel channel){
-	poller->del(channel);
+	poller->del(std::move(channel));
 }
 
 void EventLoop::loop(){
 	std::vector<SP_Channel> temp;
 	while(!quit){
-		temp.clear();
 		poller->poll(temp);
 		for(int i=0;i<temp.size();++i)
 			temp[i]->handleEvent();
+		temp.clear();
 		doPendingFunctors();
 		timermanager->handleExpiredEvent();
 	}
 }
 
 void EventLoop::addTimer(SP_Channel channel,int timeout){
-	timermanager->addTimer(channel,timeout);
+	timermanager->addTimer(std::move(channel),timeout);
 }
 
 void EventLoop::queueInLoop(Functor &&cb){

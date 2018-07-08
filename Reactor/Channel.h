@@ -7,6 +7,7 @@
 
 class EventLoop;
 typedef std::shared_ptr<EventLoop> SP_EventLoop;
+typedef std::weak_ptr<EventLoop> WP_EventLoop;
 
 class Channel{
 private:
@@ -15,7 +16,7 @@ private:
 	int events;
 	int revents;
 	bool deleted;
-	SP_EventLoop loop;
+	WP_EventLoop loop;
 	CallBack readhandler;
 	CallBack writehandler;
 	CallBack closehandler;	
@@ -35,7 +36,7 @@ public:
 	int getFd();
 	int getRevents();
 	bool isDeleted();
-	SP_EventLoop getLoop();
+	WP_EventLoop getLoop();
 };
 
 typedef std::shared_ptr<Channel> SP_Channel;

@@ -19,9 +19,9 @@ private:
 public:
 	Epoll();
 	~Epoll();
-	void add(SP_Channel request);
-	void update(SP_Channel request);
-	void del(SP_Channel request);
+	void add(const SP_Channel &request);
+	void update(const SP_Channel &request);
+	void del(const SP_Channel &request);
 	void poll(std::vector<SP_Channel> &req);
 };
 

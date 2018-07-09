@@ -10,23 +10,23 @@ EventLoop::EventLoop()
 }
 
 void EventLoop::addPoller(SP_Channel channel){
-	poller->add(std::move(channel));
+	poller->add(channel);
 }
 
 void EventLoop::updatePoller(SP_Channel channel){
-	poller->update(std::move(channel));
+	poller->update(channel);
 }
 
 void EventLoop::removePoller(SP_Channel channel){
-	poller->del(std::move(channel));
+	poller->del(channel);
 }
 
 void EventLoop::loop(){
 	std::vector<SP_Channel> temp;
 	while(!quit){
 		poller->poll(temp);
-		for(int i=0;i<temp.size();++i)
-			temp[i]->handleEvent();
+		for(auto &ti:temp)
+			ti->handleEvent();
 		temp.clear();
 		doPendingFunctors();
 		timermanager->handleExpiredEvent();
@@ -38,16 +38,14 @@ void EventLoop::addTimer(SP_Channel channel,int timeout){
 }
 
 void EventLoop::queueInLoop(Functor &&cb){
-	pthread_mutex_lock(&mutex);
+	MutexLockGuard lock(mutex);
 	pendingfunctorq.push(std::move(cb));
-	pthread_mutex_unlock(&mutex);
 }
 
 void EventLoop::doPendingFunctors(){
-	pthread_mutex_lock(&mutex);
+	MutexLockGuard lock(mutex);
 	while(!pendingfunctorq.empty()){
 		(pendingfunctorq.front())();
 		pendingfunctorq.pop();
 	}
-	pthread_mutex_unlock(&mutex);
 }

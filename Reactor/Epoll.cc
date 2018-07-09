@@ -10,7 +10,7 @@ Epoll::~Epoll(){
 	Close(epollfd);
 }
 
-void Epoll::add(SP_Channel request){
+void Epoll::add(const SP_Channel &request){
 	int fd=request->getFd();
 	SE ev;
 	ev.events=request->getRevents();
@@ -19,7 +19,7 @@ void Epoll::add(SP_Channel request){
 	Channelmap[fd]=move(request);	
 }
 
-void Epoll::update(SP_Channel request){
+void Epoll::update(const SP_Channel &request){
 	int fd=request->getFd();
 	SE ev;
 	ev.events=request->getRevents();
@@ -27,7 +27,7 @@ void Epoll::update(SP_Channel request){
 	Epoll_ctl(epollfd,EPOLL_CTL_MOD,fd,&ev);
 }
 
-void Epoll::del(SP_Channel request){
+void Epoll::del(const SP_Channel &request){
 	int fd=request->getFd();
 	SE ev;
 	ev.events=request->getRevents();

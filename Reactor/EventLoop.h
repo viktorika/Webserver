@@ -3,7 +3,7 @@
 #include "Epoll.h"
 #include "TimerManager.h"
 #include <queue>
-#include <pthread.h>
+#include "../Mutex/MutexLock.h"
 
 class Channel;
 class Epoll;
@@ -21,7 +21,7 @@ private:
 	bool looping;
 	bool quit;
 	SP_TimerManager timermanager;
-	pthread_mutex_t mutex;	
+	MutexLock mutex;
 
 public:
 	EventLoop();

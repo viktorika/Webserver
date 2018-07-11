@@ -29,3 +29,9 @@ version 6:
 ---
 * 重构了http_conn，用状态机解决了http解析问题，修复了解析bug，而且写法用了function和bind自认为比较优雅，可以参考一下.
 * 增加了http错误处理功能，暂时统一按400错误码返回.以后有待改进.
+
+version 7:
+----
+* 使用RAII机制封装锁，让线程更安全
+* 使用类似双缓冲的技术，子线程在执行主线程给的任务时，把emptyqueue置换给pendingfunctorqueue，之后对emptyqueue进行操作就可以了，这样可以减少临界区>的代码，在主线程accept往子线程添加任务时反应更迅速
+

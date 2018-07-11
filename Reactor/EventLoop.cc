@@ -43,9 +43,13 @@ void EventLoop::queueInLoop(Functor &&cb){
 }
 
 void EventLoop::doPendingFunctors(){
-	MutexLockGuard lock(mutex);
-	while(!pendingfunctorq.empty()){
-		(pendingfunctorq.front())();
-		pendingfunctorq.pop();
+	std::queue<Functor> next;
+	{
+		MutexLockGuard lock(mutex);
+		next.swap(pendingfunctorq);
+	}
+	while(!next.empty()){
+		(next.front())();
+		next.pop();
 	}
 }

@@ -34,7 +34,7 @@ Channel::Channel(SP_EventLoop Loop)
 }
 
 Channel::~Channel(){
-	printf("delete fd=%d\n",fd);
+	LOG<<"delete fd="<<fd;
 	Close(fd);
 }
 void Channel::setFd(int Fd){

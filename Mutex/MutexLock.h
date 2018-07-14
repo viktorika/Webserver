@@ -1,7 +1,7 @@
 #pragma once
 
 #include <pthread.h>
-#include "noncopyable.h"
+#include "../noncopyable.h"
 
 class MutexLock:noncopyable{
 public:
@@ -16,6 +16,9 @@ public:
 	}
 	void unlock(){
 		pthread_mutex_unlock(&mutex_);
+	}
+	pthread_mutex_t* getPthreadMutex(){
+		return &mutex_;
 	}
 
 private:

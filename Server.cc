@@ -3,7 +3,7 @@
 Server::Server(const char * port,int threadnum)
 :	loop(new EventLoop()),
 	serverchannel(new Channel(loop)),
-	threadpoll(new Threadpoll(threadnum))
+	iothreadpoll(new ThreadpollEventLoop(threadnum))
 {
 	listenfd=tcp_listen(NULL,port,NULL);
 	setnonblocking(listenfd);
@@ -19,9 +19,9 @@ void Server::handleconn(){
 	socklen_t clilen=sizeof(cliaddr);
 	int connfd;
 	while((connfd=Accept(listenfd,(SA *)&cliaddr,&clilen))>=0){
-		printf("accepet fd=%d\n",connfd);
+		LOG<<"accept fd="<<connfd;
 		setnonblocking(connfd);
-		SP_EventLoop nextloop=threadpoll->getNextloop();
+		SP_EventLoop nextloop=iothreadpoll->getNextloop();
 		SP_Channel connchannel(new Channel(nextloop));
 		connchannel->setFd(connfd);
 		connchannel->setRevents(EPOLLIN|EPOLLET);
@@ -34,11 +34,11 @@ void Server::handleconn(){
 }
 
 void Server::start(){
-	threadpoll->start();
+	iothreadpoll->start();
 	serverchannel->setRevents(EPOLLIN|EPOLLET);
 	serverchannel->setReadhandler(bind(&Server::handleconn,this));
 	loop->addPoller(serverchannel);
-	perror("start");
+	LOG<<"start";
 	loop->loop();
 }
 

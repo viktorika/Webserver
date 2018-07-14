@@ -4,6 +4,7 @@
 #include <memory>
 #include <sys/epoll.h>
 #include "EventLoop.h"
+#include "../log/Logging.h"
 
 class EventLoop;
 typedef std::shared_ptr<EventLoop> SP_EventLoop;

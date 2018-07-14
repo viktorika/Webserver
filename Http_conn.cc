@@ -54,7 +54,7 @@ PARSESTATE Http_conn::parseMethod(){
 		return PARSE_ERROR;
 	struct stat sbuf;
     if(stat((storage+path).c_str(),&sbuf)<0){
-        perror("no file");
+		LOG<<"no file";
         parsestate=PARSE_ERROR;
         return PARSE_ERROR;
     }
@@ -87,7 +87,7 @@ PARSESTATE Http_conn::parseHeader(){
 }*/
 
 PARSESTATE Http_conn::parseError(){
-	perror("parse error");
+	LOG<<"parse error";
 	inbuffer="";
 	pos=0;
 	initmsg();
@@ -156,7 +156,7 @@ void Http_conn::send(){
 	}
 	const char *buffer=outbuffer.c_str();
 	if(!writen(channel->getFd(),buffer,outbuffer.length()))
-		perror("writen error");
+		LOG<<"writen error";
 	initmsg();
 	channel->setRevents(EPOLLIN|EPOLLET);
 	channel->getLoop().lock()->updatePoller(channel);

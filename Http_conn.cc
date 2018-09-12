@@ -53,6 +53,8 @@ PARSESTATE Http_conn::parseMethod(){
 	if(!Read(path," "))
 		return PARSE_ERROR;
 	struct stat sbuf;
+	if(""==path)
+		path="index.html";
     if(stat((storage+path).c_str(),&sbuf)<0){
 		LOG<<"no file";
         parsestate=PARSE_ERROR;
@@ -151,7 +153,7 @@ void Http_conn::send(){
 		int src_fd=Open((storage+path).c_str(),O_RDONLY,0);
 		char *src_addr=(char *)mmap(NULL,size,PROT_READ,MAP_PRIVATE,src_fd,0);
 		Close(src_fd);
-		outbuffer+=string(src_addr,src_addr+size);
+		outbuffer+=string(src_addr,size);
 		munmap(src_addr,size);
 	}
 	const char *buffer=outbuffer.c_str();

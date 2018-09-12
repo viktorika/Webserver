@@ -13,10 +13,12 @@ typedef std::weak_ptr<Channel> WP_Channel;
 typedef std::shared_ptr<Epoll> SP_Epoll;
 typedef std::shared_ptr<TimerManager> SP_TimerManager;
 
-class EventLoop{
+class EventLoop:public std::enable_shared_from_this<EventLoop>{
 private:
 	typedef std::function<void()> Functor;
-	std::queue<Functor> pendingfunctorq; 
+	std::vector<Functor> pendingfunctorq;
+	int wakeupfd;
+	SP_Channel wakeupchannel;
 	SP_Epoll poller;
 	bool looping;
 	bool quit;

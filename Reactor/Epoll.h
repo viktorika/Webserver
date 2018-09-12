@@ -9,7 +9,7 @@
 
 #define MAXFDS 10000
 #define EVENTS 4096
-#define EPOLLWAIT_TIME 2000
+#define EPOLLWAIT_TIME -1
 
 class Epoll{
 private:

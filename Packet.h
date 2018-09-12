@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sys/eventfd.h>
 #include <sys/socket.h>
 #include <cstring>
 #include <cstdio>
@@ -38,3 +39,4 @@ int Open(const char *pathname,int oflags,mode_t mode);
 int Close(int sockfd);
 int Setsockopt(int sockfd,int level,int optname,const void *optval,socklen_t optlen);
 int tcp_listen(const char *hostname,const char *service,socklen_t *addrlenp);
+int Eventfd(unsigned int initval,int flags);

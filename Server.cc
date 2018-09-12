@@ -29,7 +29,7 @@ void Server::handleconn(){
 		connchannel->setClosehandler(bind(&Server::handleclose,this,wpchannel));
 		SP_Http_conn connhttp(new Http_conn(connchannel));
 		Httpmap[connfd]=move(connhttp);
-		nextloop->queueInLoop(bind(&EventLoop::addPoller,nextloop.get(),move(connchannel)));
+		nextloop->queueInLoop(bind(&EventLoop::addPoller,nextloop,move(connchannel)));
 	}
 }
 

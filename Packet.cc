@@ -160,3 +160,10 @@ int tcp_listen(const char *host,const char *serv,socklen_t *addrlenp){
 	freeaddrinfo(ressave);
 	return listenfd;
 }
+
+int Eventfd(unsigned int initval,int flags){
+	int n;
+	if((n=eventfd(initval,flags))<0)
+		fprintf(stderr,"eventfd error\n");
+	return n;
+}

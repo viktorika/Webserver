@@ -2,17 +2,17 @@
 
 #include "ThreadEventLoop.h"
 
-class ThreadpollEventLoop{
+class ThreadpoolEventLoop{
 private:
 	vector<SP_ThreadEventLoop> elv;	
 	int threadnum;	
 	int index;
 
 public:
-	ThreadpollEventLoop(int Threadnum);
-	~ThreadpollEventLoop();
+	ThreadpoolEventLoop(int Threadnum);
+	~ThreadpoolEventLoop();
 	void start();
 	SP_EventLoop getNextloop();
 };
 
-typedef std::unique_ptr<ThreadpollEventLoop> UP_ThreadpollEventLoop;
+typedef std::unique_ptr<ThreadpoolEventLoop> UP_ThreadpoolEventLoop;

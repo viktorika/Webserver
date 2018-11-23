@@ -1,6 +1,6 @@
-#include "ThreadpollEventLoop.h"
+#include "ThreadpoolEventLoop.h"
 
-ThreadpollEventLoop::ThreadpollEventLoop(int Threadnum)
+ThreadpoolEventLoop::ThreadpoolEventLoop(int Threadnum)
 :	threadnum(Threadnum),
 	index(0)
 {
@@ -11,16 +11,16 @@ ThreadpollEventLoop::ThreadpollEventLoop(int Threadnum)
 	}	
 }
 
-ThreadpollEventLoop::~ThreadpollEventLoop(){
+ThreadpoolEventLoop::~ThreadpoolEventLoop(){
 	elv.clear();
 }
 
-void ThreadpollEventLoop::start(){
+void ThreadpoolEventLoop::start(){
 	for(auto &evi:elv)
 		evi->start();
 }
 
-SP_EventLoop ThreadpollEventLoop::getNextloop(){
+SP_EventLoop ThreadpoolEventLoop::getNextloop(){
 	index=(index+1)%threadnum;
 	return elv[index]->getLoop();
 }

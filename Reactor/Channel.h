@@ -5,6 +5,7 @@
 #include <sys/epoll.h>
 #include "EventLoop.h"
 #include "../log/Logging.h"
+#include "../MemoryPool/MemoryPool.h"
 
 class EventLoop;
 typedef std::shared_ptr<EventLoop> SP_EventLoop;
@@ -23,6 +24,13 @@ private:
 	CallBack closehandler;	
 
 public:
+	static void* operator new(size_t size){
+		return	use_memory(15);
+	}
+
+	static void operator delete(void *p){
+		free_memory(15,p);
+	}
 	Channel(SP_EventLoop Loop);
 	~Channel();
 	void setReadhandler(CallBack &&readHandler);

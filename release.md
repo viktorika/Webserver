@@ -45,3 +45,10 @@ version 8:
 #### 然后来说说LogStream类，里面其实就一个Buffer缓冲区，是用来暂时存放我们写入的信息的.还有就是重载运算符，因为我们采用的是C++ Stream的风格
 #### 再来说说AsyncLogging类，这个是最核心的部分，我们知道在多线程程序中写Log无非就是前端往后端写，后端往硬盘写，首先前面提到了将LogStream的内容写到了AsyncLogging缓冲区里，也就是前端往后端写，这个过程通过append函数实现，后端实现通过threadfunc函数，两个线程的同步和等待通过互斥锁和条件变量来实现，具体实现使用了双缓冲技术，双缓冲技术的基本思路:准备两块buffer，A和B,前端往A写数据，后端从B里面往硬盘写数据，当A写满后，交换A和B，如此反复．不过实际的实现的话和这个还是有点区别，具体看代码吧
 #### 剩下的LogFile类和FileUtil类其实没什么好说的，就是把文件用RAII机制封装了，LogFile在FileUtil的基础上再封装增加了点功能罢了．
+
+version 9:
+----
+* 使用eventfd用于线程通信，将分配fd的操作视作io操作封装在Channel一同放进epoll，更好的管理事件
+* 实现了自己的内存池，进一步优化性能
+
+#内存池具体实现参考STL allocator和github上的第一个memorypool

@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include "Channel.h"
 #include <unordered_map>
+#include "../MemoryPool/MemoryPool.h"
 
 typedef long long LL;
 
@@ -17,6 +18,14 @@ private:
 	LL expiredtime;
 
 public:
+	static void* operator new(size_t size){
+		return use_memory(2);		
+	}
+
+	static void operator delete(void *p){
+		free_memory(2,p);
+	}
+
 	TimerNode(SP_Channel Channel,int timeout);
 	~TimerNode();
 	LL getExpiredtime();
@@ -40,6 +49,14 @@ private:
 	std::unordered_map<int,SP_TimerNode>timermap;
 
 public:
+	static void* operator new(size_t size){
+		return use_memory(10);
+	}
+
+	static void operator delete(void *p){
+		free_memory(10,p);
+	}
+
 	void addTimer(SP_Channel channel,int timeout);
 	void handleExpiredEvent();
 };

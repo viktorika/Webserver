@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include "../MemoryPool/MemoryPool.h"
 
 #define MAXFDS 10000
 #define EVENTS 4096
@@ -16,7 +17,16 @@ private:
 	int epollfd;
 	std::vector<SE> events;
 	std::unordered_map<int,SP_Channel>Channelmap;
+
 public:
+	static void* operator new(size_t size){
+		return use_memory(10);
+	}
+
+	static void operator delete(void *p){
+		free_memory(10,p);
+	}
+
 	Epoll();
 	~Epoll();
 	void add(const SP_Channel &request);

@@ -1,22 +1,5 @@
 #include "Thread.h"
 
-struct ThreadData{
-	typedef std::function<void()> ThreadFunc;
-	ThreadFunc func;
-	std::string name;
-	
-	ThreadData(const ThreadFunc &Func,const std::string &Name)
-	:	func(Func),
-		name(Name)
-	{
-		
-	}
-	
-	void runInThread(){
-		func();
-	}
-};
-
 Thread::Thread(const ThreadFunc&& Func,const std::string &n)
 :	started_(false),
 	joined_(false),

@@ -10,7 +10,7 @@ AsyncLogging::AsyncLogging(const std::string logFileName,int FlushInterval)
 	currentBuffer(new Buffer),
 	nextBuffer(new Buffer)
 {
-	
+
 }
 
 AsyncLogging::~AsyncLogging(){

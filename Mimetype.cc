@@ -1,7 +1,7 @@
 #include "Mimetype.h"
 
 pthread_once_t Mimetype::once_control=PTHREAD_ONCE_INIT;
-std::unordered_map<std::string,std::string> Mimetype::mime;
+std::map<std::string,std::string> Mimetype::mime;
 
 void Mimetype::init(){
     mime[".html"] = "text/html";

@@ -9,6 +9,9 @@ private:
 	int index;
 
 public:
+	static void operator delete(void *p){
+		free_memory(3,p);
+	}
 	ThreadpoolEventLoop(int Threadnum);
 	~ThreadpoolEventLoop();
 	void start();

@@ -24,7 +24,8 @@ int Listen(int sockfd,int backlog){
 int Accept(int sockfd,SA *cliaddr,socklen_t *addrlen){
 	int n;
 	if((n=accept(sockfd,cliaddr,addrlen))<0)
-		fprintf(stderr,"accept error\n");
+		//fprintf(stderr,"accept error\n");
+		;
 	return n;
 }
 

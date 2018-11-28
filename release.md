@@ -52,3 +52,8 @@ version 9:
 * 实现了自己的内存池，进一步优化性能
 
 #### 内存池具体实现参考STL allocator和github上的第一个memorypool
+
+version 10:
+----
+* 修复了遇到sigpipe信号服务器崩溃问题
+* 进步一优化计时器结构

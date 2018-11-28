@@ -10,6 +10,7 @@ EventLoop::EventLoop()
 }
 
 void EventLoop::addPoller(SP_Channel channel){
+	//timermanager->addTimer(channel,DEFAULT_KEEP_ALIVE_TIME);
 	poller->add(channel);
 }
 

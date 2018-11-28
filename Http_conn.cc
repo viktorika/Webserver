@@ -179,7 +179,7 @@ void Http_conn::handleError(int errornum,string msg){//暂时统一用400,Bad Re
 	outbuffer +=body;
     const char *buffer=outbuffer.c_str();
     if(!writen(channel->getFd(),buffer,outbuffer.length()))
-        perror("writen error");
+        LOG<<"writen error";
     channel->setRevents(EPOLLIN|EPOLLET);
     channel->getLoop().lock()->updatePoller(channel);
 }

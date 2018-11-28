@@ -18,6 +18,7 @@ private:
 	int events;
 	int revents;
 	bool deleted;
+	bool First;
 	WP_EventLoop loop;
 	CallBack readhandler;
 	CallBack writehandler;
@@ -42,6 +43,8 @@ public:
 	void setFd(int Fd);
 	void setRevents(int Revents);
 	void setEvents(int Events);
+	void setnotFirst();
+	bool isFirst();
 	int getFd();
 	int getRevents();
 	bool isDeleted();

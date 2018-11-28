@@ -43,8 +43,13 @@ SP_Channel TimerNode::getChannel(){
 
 void TimerManager::addTimer(SP_Channel channel,int timeout){
 	SP_TimerNode timernode(new TimerNode(channel,timeout));;
-	timerheap.push(timernode);
-	timermap[channel->getFd()]=std::move(timernode);
+	int cfd=channel->getFd();
+	//if(timermap.find(cfd)==timermap.end())
+	if(channel->isFirst()){
+		timerheap.push(timernode);
+		channel->setnotFirst();
+	}
+	timermap[cfd]=std::move(timernode);
 }
 
 void TimerManager::handleExpiredEvent(){
@@ -52,10 +57,13 @@ void TimerManager::handleExpiredEvent(){
 		SP_TimerNode now=timerheap.top();
 		if(now->isDeleted()||!now->isValib()){
 			timerheap.pop();
-			if(now==timermap[now->getChannel()->getFd()]){
+			SP_TimerNode timernode=timermap[now->getChannel()->getFd()];
+			if(now==timernode){
 				timermap.erase(now->getChannel()->getFd());
 				now->getChannel()->handleClose();
 			}
+			else
+				timerheap.push(timernode);
 		}
 		else
 			break;

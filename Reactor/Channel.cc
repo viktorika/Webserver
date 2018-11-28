@@ -28,9 +28,14 @@ void Channel::handleClose(){
 
 Channel::Channel(SP_EventLoop Loop)
 :	loop(Loop),
-	deleted(false)
+	deleted(false),
+	First(true)
 {
 	
+}
+
+void Channel::setnotFirst(){
+	First=false;
 }
 
 Channel::~Channel(){
@@ -59,6 +64,10 @@ int Channel::getRevents(){
 
 bool Channel::isDeleted(){
 	return deleted;
+}
+
+bool Channel::isFirst(){
+	return First;
 }
 
 WP_EventLoop Channel::getLoop(){

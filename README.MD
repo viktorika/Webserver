@@ -12,11 +12,12 @@ Envoirment
 
 ## Build
 
-	make
+	make&&sudo make install
 
 ## Usage
 
-	page里放请求的页面，启动服务器：./Webserver [-n threadnum] [-p port]
+	安装路径 /usr/local/WebServer
+	sudo ./WebServer
 
 Technical points
 ----

@@ -3,6 +3,7 @@
 #include "AsyncLogging.h"
 #include <sys/time.h>
 #include "FixedBuffer.h"
+#include "../conf/Conf.h"
 
 class Impl{
 public:
@@ -21,9 +22,9 @@ private:
 class Logger{
 private:
 	Impl impl;
-	static std::string logFileName;
 
 public:
+	static std::string logFileName;
 	Logger(const char *filename,int line);
 	~Logger();
 	LogStream& stream();

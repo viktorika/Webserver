@@ -1,5 +1,6 @@
 #pragma once
 
+#include "conf/Conf.h"
 #include <sys/eventfd.h>
 #include <sys/socket.h>
 #include <cstring>
@@ -16,7 +17,6 @@
 #include <netdb.h>
 
 #define MAXLINE 4096 
-#define LISTENQ 2048
 
 typedef struct sockaddr SA;
 typedef struct epoll_event SE;

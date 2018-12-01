@@ -3,9 +3,10 @@
 static pthread_once_t once_control=PTHREAD_ONCE_INIT;
 static AsyncLogging *AsyncLogger;
 
-std::string Logger::logFileName="WebServer.log";
+std::string Logger::logFileName;
 
 void init(){
+	Logger::logFileName=getconf().getlogfile();
 	AsyncLogger=new AsyncLogging(Logger::getLogFileName());
 	AsyncLogger->start();
 }

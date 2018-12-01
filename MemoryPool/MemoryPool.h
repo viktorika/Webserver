@@ -43,4 +43,4 @@ public:
 void init_memorypool();
 void* use_memory(int number);
 void free_memory(int number,void *p);
-static MemoryPool memorypool[16];
+extern MemoryPool memorypool[16];

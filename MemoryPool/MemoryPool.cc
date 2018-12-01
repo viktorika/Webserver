@@ -1,5 +1,7 @@
 #include "MemoryPool.h"
 
+MemoryPool memorypool[16];
+
 MemoryPool::MemoryPool(){
 
 }

@@ -7,9 +7,9 @@
 #include <unordered_map>
 #include <iostream>
 #include <sys/mman.h>
+#include "conf/Conf.h"
 
 using namespace std;
-#define DEFAULT_KEEP_ALIVE_TIME 20000
 
 enum METHOD{METHOD_GET,METHOD_POST};
 enum HTTPVERSION{HTTP_10,HTTP_11};

@@ -1,22 +1,27 @@
 #include "Server.h"
 #include <signal.h>
+#include "conf/Conf.h"
 
 int main(int argc,char **argv){
 	init_memorypool();
-	char port[10]="8080";
-	int threadnum=3;
-	const char *parm="p:n:";
+	const char *parm="hvc:";
+	char conf[100]="conf/WebServer.conf";
 	int opt;
 	while(~(opt=getopt(argc,argv,parm))){
 		switch(opt){
-			case 'p':strncpy(port,optarg,9);break;
-			case 'n':threadnum=atoi(optarg);break;
+			case 'h':
+				printf("Options:\n");
+				printf("  -h\t: this help\n");
+				printf("  -v\t: show version and exiet\n");
+				printf("  -c\t: set configuration file(default: conf/WebServer.conf)\n)");
+				return 0;
+			case 'v':printf("WebServer version WebServer/1.11\n");return 0;
+			case 'c':strncpy(conf,optarg,99);break;
 			default:break;
 		}
 	}
-	if(threadnum<=0)
-		fprintf(stderr,"threadnum must be a positive number!\n");
+	getconf().init(conf);
 	signal(SIGPIPE,SIG_IGN);
-	Server server(port,threadnum);
+	Server server(getconf().getport().c_str(),getconf().getio_thread());
 	server.start();
 }

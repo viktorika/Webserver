@@ -155,7 +155,7 @@ int tcp_listen(const char *host,const char *serv,socklen_t *addrlenp){
 	}while((res=res->ai_next));
 	if(!res)
 		fprintf(stderr,"tcp_listen error\n");
-	Listen(listenfd,LISTENQ);
+	Listen(listenfd,getconf().getlistenq());
 	if(addrlenp)
 		*addrlenp=res->ai_addrlen;
 	freeaddrinfo(ressave);

@@ -8,7 +8,7 @@ void Http_conn::initmsg(){
 
 Http_conn::Http_conn(SP_Channel Channel)
 :	channel(Channel),
-	storage("page/"),
+	storage(getconf().getstorage()),
 	parsestate(PARSE_METHOD),
 	pos(0),
 	inbuffer(""),
@@ -139,8 +139,8 @@ void Http_conn::send(){
 	else if(METHOD_GET==method){
 		if(keepalive){
 			outbuffer="HTTP/1.1 200 OK\r\n";
-			outbuffer+=string("Connection: Keep-Alive\r\n")+"Keep-Alive: timeout="+to_string(DEFAULT_KEEP_ALIVE_TIME)+"\r\n";
-			channel->getLoop().lock()->addTimer(channel,DEFAULT_KEEP_ALIVE_TIME);
+			outbuffer+=string("Connection: Keep-Alive\r\n")+"Keep-Alive: timeout="+to_string(getconf().getkeep_alived())+"\r\n";
+			channel->getLoop().lock()->addTimer(channel,getconf().getkeep_alived());
 		}
 		else{
 			outbuffer="HTTP/1.0 200 OK\r\n";

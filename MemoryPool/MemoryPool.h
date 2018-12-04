@@ -43,4 +43,4 @@ public:
 void init_memorypool();
 void* use_memory(int number);
 void free_memory(int number,void *p);
-extern MemoryPool memorypool[16];
+MemoryPool& get_memorypool(int id);

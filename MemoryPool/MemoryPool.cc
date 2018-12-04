@@ -1,7 +1,5 @@
 #include "MemoryPool.h"
 
-MemoryPool memorypool[16];
-
 MemoryPool::MemoryPool(){
 
 }
@@ -72,10 +70,8 @@ Slot* MemoryPool::allocate(){
 				return result;
 			}
 		}
-		return nofree_solve();
 	}
-	else
-		return nofree_solve();
+	return nofree_solve();
 }
 
 inline void MemoryPool::deallocate(Slot* p){
@@ -96,11 +92,11 @@ inline void MemoryPool::deallocate(Slot* p){
 }*/
 
 void* use_memory(int number){
-	return memorypool[number].allocate();
+	return get_memorypool(number).allocate();
 }
 
 void free_memory(int number,void *p){
-	memorypool[number].deallocate(reinterpret_cast<Slot *>(p));
+	get_memorypool(number).deallocate(reinterpret_cast<Slot *>(p));
 }
 
 /*void operator delete(void *p,size_t size){
@@ -113,5 +109,10 @@ void free_memory(int number,void *p){
 
 void init_memorypool(){
 	for(int i=0;i<16;++i)
-		memorypool[i].init((i+1)<<3);
+		get_memorypool(i).init((i+1)<<3);
+}
+
+MemoryPool& get_memorypool(int id){
+	static MemoryPool memorypool[16];
+	return memorypool[id];
 }

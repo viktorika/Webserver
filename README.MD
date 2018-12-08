@@ -18,6 +18,8 @@ Envoirment
 
 	安装路径 /usr/local/WebServer
 	sudo ./WebServer
+	前台运行可通过ctrl c安全关闭程序
+	后台程序可通过kill -QUIT安全关闭程序
 
 Technical points
 ----
@@ -30,3 +32,4 @@ Technical points
 * 优化blocking queue,子线程在执行主线程给的任务时，把emptyqueue置换给pendingfunctorqueue，之后对emptyqueue进行操作就可以了，这样可以减少临界区的代码，在主线程accept往子线程添加任务时反应更迅速．
 * 参考muduo用双缓冲技术实现Log日志.
 * 实现自己的内存池，进一步优化性能
+* 实现了LFU缓存，加快访问速度

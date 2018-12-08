@@ -10,6 +10,7 @@ void MemoryPool::init(int size){
 }
 
 MemoryPool::~MemoryPool(){
+	printf("Memory release!\n");
 	Slot* curr=currentBlock;
 	while(curr){
 		Slot* prev=curr->next;
@@ -84,7 +85,9 @@ inline void MemoryPool::deallocate(Slot* p){
 
 /*void *operator new(size_t size){
 	printf("size=%d\n",size);
+	long long *p;
 	if(size>128){
+		
 		//malloc未处理
 		return malloc(size);
 	}
@@ -108,11 +111,11 @@ void free_memory(int number,void *p){
 }*/
 
 void init_memorypool(){
-	for(int i=0;i<16;++i)
+	for(int i=0;i<64;++i)
 		get_memorypool(i).init((i+1)<<3);
 }
 
 MemoryPool& get_memorypool(int id){
-	static MemoryPool memorypool[16];
+	static MemoryPool memorypool[64];
 	return memorypool[id];
 }

@@ -44,3 +44,18 @@ void init_memorypool();
 void* use_memory(int number);
 void free_memory(int number,void *p);
 MemoryPool& get_memorypool(int id);
+
+/*template<typename T,class... Args> 
+T* newElement(T *result,Args&& args){
+	result=reinterpret_cast<T *>(get_memorypool(((sizeof(T)+7)>>3)));
+	construct(result,std::forward<Args>(args)...);
+	return result;
+}
+
+template<typename T>
+void deleteElement(T *p){
+	if(p){
+		p->~value_type();
+		
+	}
+}*/

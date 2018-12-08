@@ -1,9 +1,10 @@
 #include "EventLoop.h"
 
+bool EventLoop::quit=false;
+
 EventLoop::EventLoop()
 :	poller(new Epoll()),
 	looping(false),
-	quit(false),
 	timermanager(new TimerManager())
 {
 	wakeupfd=Eventfd(0,EFD_NONBLOCK|EFD_CLOEXEC);
@@ -63,4 +64,8 @@ void EventLoop::doPendingFunctors(){
 	}
 	for(auto &ti:next)
 		ti();
+}
+
+void EventLoop::setquit(int a){
+	quit=true;
 }

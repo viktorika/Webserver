@@ -31,6 +31,10 @@ string Conf::getlogfile(){
 	return logfile;
 }
 
+int Conf::getcapacity(){
+	return capacity;
+}
+
 int Conf::getpos(string &buf,int start,int end,bool flag){
 	for(;start<end;++start){
 		if(flag){
@@ -104,6 +108,10 @@ void Conf::init(char *path){
 		logfile=m["logfile"];
 	else
 		logfile=DEFAULT_LOGFILE;
+	if(m.find("capacity")!=m.end())
+		capacity=stoi(m["capacity"]);
+	else
+		capacity=10;
 }
 
 Conf& getconf(){

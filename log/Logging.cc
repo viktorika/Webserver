@@ -59,9 +59,9 @@ Logger::~Logger(){
 }
 
 
-void Logger::setLogFileName(std::string fileName){
+/*void Logger::setLogFileName(std::string fileName){
 	logFileName=fileName;
-}
+}*/
 
 std::string Logger::getLogFileName(){
 	return logFileName;

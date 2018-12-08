@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sys/mman.h>
 #include "conf/Conf.h"
+#include "MemoryPool/MemoryPool.h"
+#include "cache/LFUCache.h"
 
 using namespace std;
 
@@ -46,6 +48,13 @@ private:
 	void handleError(int errornum,string msg);
 
 public:
+	static void * operator new(size_t){
+		return use_memory(44);
+	}
+
+	static void operator delete(void *p){
+		free_memory(44,p);
+	}
 	Http_conn(SP_Channel channel);
 	~Http_conn();
 };

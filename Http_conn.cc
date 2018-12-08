@@ -150,11 +150,15 @@ void Http_conn::send(){
 		outbuffer += "Content-Length: " + to_string(size) + "\r\n";
         outbuffer += "Server: WWQ's Web Server\r\n";
 		outbuffer += "\r\n";
-		int src_fd=Open((storage+path).c_str(),O_RDONLY,0);
-		char *src_addr=(char *)mmap(NULL,size,PROT_READ,MAP_PRIVATE,src_fd,0);
-		Close(src_fd);
-		outbuffer+=string(src_addr,size);
-		munmap(src_addr,size);
+		if(!(getCache().get(path,outbuffer))){
+			int src_fd=Open((storage+path).c_str(),O_RDONLY,0);
+			char *src_addr=(char *)mmap(NULL,size,PROT_READ,MAP_PRIVATE,src_fd,0);
+			Close(src_fd);
+			string context(src_addr,size);
+			outbuffer+=context;
+			getCache().set(path,context);
+			munmap(src_addr,size);
+		}
 	}
 	const char *buffer=outbuffer.c_str();
 	if(!writen(channel->getFd(),buffer,outbuffer.length()))

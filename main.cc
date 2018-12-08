@@ -21,7 +21,10 @@ int main(int argc,char **argv){
 		}
 	}
 	getconf().init(conf);
+	getCache().init();
 	signal(SIGPIPE,SIG_IGN);
+	signal(SIGINT,EventLoop::setquit);
+	signal(SIGQUIT,EventLoop::setquit);
 	Server server(getconf().getport().c_str(),getconf().getio_thread());
 	server.start();
 }

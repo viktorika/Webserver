@@ -17,6 +17,7 @@ private:
 	int keep_alived;
 	string storage;
 	string logfile;
+	int capacity;	
 
 public:
 	void init(char *path);
@@ -26,6 +27,7 @@ public:
 	string getstorage();
 	string getlogfile();
 	int getkeep_alived();
+	int getcapacity();
 	Conf();
 
 private:	

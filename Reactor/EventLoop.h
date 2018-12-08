@@ -21,11 +21,19 @@ private:
 	SP_Channel wakeupchannel;
 	SP_Epoll poller;
 	bool looping;
-	bool quit;
+	static bool quit;
 	SP_TimerManager timermanager;
 	MutexLock mutex;
 
 public:
+	static void* operator new(size_t size){
+		return use_memory(17);	
+	}
+
+	static void operator delete(void *p){
+		free_memory(17,p);
+	}
+
 	EventLoop();
 	void addPoller(SP_Channel channel);
 	void updatePoller(SP_Channel channel);
@@ -34,6 +42,7 @@ public:
 	void addTimer(SP_Channel channel,int timeout);
 	void queueInLoop(Functor &&cb);
 	void doPendingFunctors();
+	static void setquit(int);
 };
 
 typedef std::shared_ptr<EventLoop> SP_EventLoop;

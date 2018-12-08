@@ -28,7 +28,7 @@ public:
 	Logger(const char *filename,int line);
 	~Logger();
 	LogStream& stream();
-	static void setLogFileName(std::string fileName);
+	//static void setLogFileName(std::string fileName);
 	static std::string getLogFileName();
 };
 

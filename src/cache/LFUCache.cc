@@ -96,6 +96,8 @@ void LFUCache::addfreq(key_node &nowk,freq_node &nowf){
 }
 
 bool LFUCache::get(string &key,string &v){
+	if(!capacity)
+		return false;
 	MutexLockGuard lock(mutex);
 	if(fmap.find(key)!=fmap.end()){
 		//命中

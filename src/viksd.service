@@ -1,0 +1,11 @@
+[Unit]
+Description=Viks daemon service
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+Exec=/opt/viks/Webserver
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

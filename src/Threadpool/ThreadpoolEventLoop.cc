@@ -6,7 +6,7 @@ ThreadpoolEventLoop::ThreadpoolEventLoop(int Threadnum)
 {
 	elv.reserve(threadnum);
 	for(int i=0;i<threadnum;++i){
-		SP_ThreadEventLoop t(new ThreadEventLoop());
+		SP_ThreadEventLoop t(newElement<ThreadEventLoop>(),deleteElement<ThreadEventLoop>);
 		elv.emplace_back(t);
 	}	
 }

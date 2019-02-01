@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <utility>
 #include "../Mutex/MutexLock.h"
+#include <functional>
 
 #define BlockSize 4096
 
@@ -41,21 +42,21 @@ public:
 //void *operator new(size_t);
 //void operator delete(void *p,size_t size);
 void init_memorypool();
-void* use_memory(int number);
-void free_memory(int number,void *p);
+void* use_memory(size_t size);
+void free_memory(size_t size,void *p);
 MemoryPool& get_memorypool(int id);
 
-/*template<typename T,class... Args> 
-T* newElement(T *result,Args&& args){
-	result=reinterpret_cast<T *>(get_memorypool(((sizeof(T)+7)>>3)));
-	construct(result,std::forward<Args>(args)...);
-	return result;
+template<class T,class... Args>
+T* newElement(Args&&... args){
+	T *p;
+	if(p=reinterpret_cast<T *>(use_memory(sizeof(T))))
+		new(p)T(std::forward<Args>(args)...);
+	return p;
 }
 
-template<typename T>
-void deleteElement(T *p){
-	if(p){
-		p->~value_type();
-		
-	}
-}*/
+template<class T>
+void deleteElement(T* p){
+	if(p)
+		p->~T();
+	free_memory(sizeof(T),reinterpret_cast<void *>(p));
+}

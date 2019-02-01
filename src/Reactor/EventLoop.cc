@@ -3,9 +3,9 @@
 bool EventLoop::quit=false;
 
 EventLoop::EventLoop()
-:	poller(new Epoll()),
+:	poller(newElement<Epoll>(),deleteElement<Epoll>),
 	looping(false),
-	timermanager(new TimerManager())
+	timermanager(newElement<TimerManager>(),deleteElement<TimerManager>)
 {
 	wakeupfd=Eventfd(0,EFD_NONBLOCK|EFD_CLOEXEC);
 }
@@ -24,7 +24,7 @@ void EventLoop::removePoller(SP_Channel channel){
 }
 
 void EventLoop::loop(){
-	wakeupchannel=SP_Channel(new Channel(shared_from_this()));
+	wakeupchannel=SP_Channel(newElement<Channel>(shared_from_this()),deleteElement<Channel>);
 	wakeupchannel->setFd(wakeupfd);
 	wakeupchannel->setRevents(EPOLLIN|EPOLLET);
 	wakeupchannel->setReadhandler(std::bind(&EventLoop::doPendingFunctors,shared_from_this()));

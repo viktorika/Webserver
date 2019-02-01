@@ -33,3 +33,5 @@ public:
 	void stop();	
 
 };
+
+typedef std::unique_ptr<AsyncLogging,decltype(deleteElement<AsyncLogging>)*> UP_AsyncLogging;

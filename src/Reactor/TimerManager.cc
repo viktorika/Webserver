@@ -42,7 +42,8 @@ SP_Channel TimerNode::getChannel(){
 }
 
 void TimerManager::addTimer(SP_Channel channel,int timeout){
-	SP_TimerNode timernode(new TimerNode(channel,timeout));;
+	//SP_TimerNode timernode(new TimerNode(channel,timeout));
+	SP_TimerNode timernode(newElement<TimerNode>(channel,timeout),deleteElement<TimerNode>);
 	int cfd=channel->getFd();
 	//if(timermap.find(cfd)==timermap.end())
 	if(channel->isFirst()){

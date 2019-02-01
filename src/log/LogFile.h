@@ -2,6 +2,7 @@
 
 #include "../Mutex/MutexLock.h"
 #include "FileUtil.h"
+#include "../MemoryPool/MemoryPool.h"
 
 class LogFile:noncopyable{
 private:

@@ -4,7 +4,7 @@ void KeyList::init(int fq)
 {
 	freq=fq;
 	//head=last=new Node<Key>;
-	head=last=reinterpret_cast<key_node>(use_memory(9));
+	head=last=newElement<Node<Key>>();
 	head->setNext(NULL);
 }
 
@@ -13,7 +13,7 @@ void KeyList::destory(){
 		key_node pre=head;
 		head=head->getNext();
 		//delete pre;
-		free_memory(9,reinterpret_cast<void *>(pre));
+		deleteElement(pre);
 	}
 }
 
@@ -53,7 +53,7 @@ key_node KeyList::getLast(){
 void LFUCache::init(){
 	capacity=getconf().getcapacity();
 	//head=new Node<KeyList>;
-	head=reinterpret_cast<freq_node>(use_memory(4));
+	head=newElement<Node<KeyList>>();
 	head->getValue().init(0);
 	head->setNext(NULL);
 }
@@ -64,7 +64,7 @@ LFUCache::~LFUCache(){
 		head=head->getNext();
 		pre->getValue().destory();
 		//delete pre;
-		free_memory(4,reinterpret_cast<void *>(pre));
+		deleteElement(pre);
 	}
 }
 
@@ -74,7 +74,7 @@ void LFUCache::addfreq(key_node &nowk,freq_node &nowf){
 		//插入freqnode
 		//printf("new freqnode!\n");
 		//nxt=new Node<KeyList>;
-		nxt=reinterpret_cast<freq_node>(use_memory(4));
+		nxt=newElement<Node<KeyList>>();
 		nxt->getValue().init(nowf->getValue().getFreq()+1);
 		if(nowf->getNext())
 			nowf->getNext()->setPre(nxt);
@@ -123,12 +123,12 @@ void LFUCache::set(string &key,string &v){
 		kmap.erase(last->getValue().key);
 		fmap.erase(last->getValue().key);
 		//delete last;
-		free_memory(9,reinterpret_cast<void *>(last));
+		deleteElement(last);
 		if(headnxt->getValue().isEmpty())
 			del(headnxt);
 	}
 	//key_node nowk=new Node<Key>;
-	key_node nowk=reinterpret_cast<key_node>(use_memory(9));
+	key_node nowk=newElement<Node<Key>>();
 	nowk->getValue().key=key;
 	nowk->getValue().value=v;
 	addfreq(nowk,head);
@@ -140,8 +140,8 @@ void LFUCache::del(freq_node &node){
 	if(node->getNext())
     	node->getNext()->setPre(node->getPre());
     node->getValue().destory();
-	free_memory(4,reinterpret_cast<void *>(node));
     //delete node;
+	deleteElement(node);
 }
 
 LFUCache& getCache(){

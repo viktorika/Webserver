@@ -7,8 +7,8 @@ AsyncLogging::AsyncLogging(const std::string logFileName,int FlushInterval)
 	thread_(std::bind(&AsyncLogging::threadFunc,this),"Logging"),
 	mutex(),
 	cond(mutex),
-	currentBuffer(new Buffer),
-	nextBuffer(new Buffer)
+	currentBuffer(newElement<Buffer>(),deleteElement<Buffer>),
+	nextBuffer(newElement<Buffer>(),deleteElement<Buffer>)
 {
 
 }
@@ -27,15 +27,15 @@ void AsyncLogging::append(const char *logline,int len){
 		if(nextBuffer)
 			currentBuffer=std::move(nextBuffer);
 		else
-			currentBuffer.reset(new Buffer);
+			currentBuffer.reset(newElement<Buffer>(),deleteElement<Buffer>);
 		currentBuffer->append(logline,len);
 		cond.notify();
 	}
 }
 
 void AsyncLogging::threadFunc(){
-	BufferPtr newBuffer1(new Buffer);
-	BufferPtr newBuffer2(new Buffer);
+	BufferPtr newBuffer1(newElement<Buffer>(),deleteElement<Buffer>);
+	BufferPtr newBuffer2(newElement<Buffer>(),deleteElement<Buffer>);
 	BufferVector buffersToWrite;
 	LogFile output(basename);
 	while(running){
@@ -52,9 +52,9 @@ void AsyncLogging::threadFunc(){
 		for(auto &wi:buffersToWrite)
 			output.append(wi->data(),wi->length());
 		if(!newBuffer1)
-			newBuffer1.reset(new Buffer);
+			newBuffer1.reset(newElement<Buffer>(),deleteElement<Buffer>);
 		if(!newBuffer2)
-			newBuffer2.reset(new Buffer);
+			newBuffer2.reset(newElement<Buffer>(),deleteElement<Buffer>);
 		buffersToWrite.clear();
 		output.flush();
 	}

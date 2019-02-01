@@ -26,14 +26,6 @@ private:
 	MutexLock mutex;
 
 public:
-	static void* operator new(size_t size){
-		return use_memory(17);	
-	}
-
-	static void operator delete(void *p){
-		free_memory(17,p);
-	}
-
 	EventLoop();
 	void addPoller(SP_Channel channel);
 	void updatePoller(SP_Channel channel);

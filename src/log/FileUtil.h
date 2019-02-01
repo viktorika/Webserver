@@ -3,6 +3,7 @@
 #include "../noncopyable.h"
 #include <fstream>
 #include <memory>
+#include "../MemoryPool/MemoryPool.h"
 
 #define BUFFERSIZE 64*1024
 
@@ -19,4 +20,4 @@ public:
 	void flush();
 };
 
-typedef std::unique_ptr<FileUtil> UP_FileUtil;
+typedef std::unique_ptr<FileUtil,decltype(deleteElement<FileUtil>)*> UP_FileUtil;

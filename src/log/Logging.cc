@@ -1,19 +1,22 @@
 #include "Logging.h"
 
 static pthread_once_t once_control=PTHREAD_ONCE_INIT;
-static AsyncLogging *AsyncLogger;
 
 std::string Logger::logFileName;
 
+UP_AsyncLogging& getAsyncLogging(){
+	static UP_AsyncLogging AsyncLogger(newElement<AsyncLogging>(Logger::getLogFileName()),deleteElement<AsyncLogging>);
+	return AsyncLogger;
+}
+
 void init(){
 	Logger::logFileName=getconf().getlogfile();
-	AsyncLogger=new AsyncLogging(Logger::getLogFileName());
-	AsyncLogger->start();
+	getAsyncLogging()->start();
 }
 
 void output(const char *msg,int len){
 	pthread_once(&once_control,init);
-	AsyncLogger->append(msg,len);
+	getAsyncLogging()->append(msg,len);
 }
 
 Impl::Impl(const char *fileName,int line)

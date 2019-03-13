@@ -22,6 +22,23 @@ Environment
 	前台运行可通过ctrl c安全关闭程序
 	后台程序可通过kill -QUIT安全关闭程序
 
+	
+## Run in Docker
+
+Build:
+```sh
+git clone https://github.com/viktorika/Webserver.git && cd Webserver
+docker build -t alpine-webserver .
+```
+Run:
+```sh
+docker run -dit -p 8080:8080 alpine-webserver
+# Apply you own config file
+docker run -dit -p 8080:8080 -v /path/to/your.conf:/opt/conf/Webserver.conf alpine-webserver
+```
+
+
+	
 Technical points
 ----
 * 采用Reactor模式+EPOLL(ET)非阻塞IO

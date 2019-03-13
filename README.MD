@@ -21,6 +21,7 @@ Environment
 	sudo ./WebServer
 	前台运行可通过ctrl c安全关闭程序
 	后台程序可通过kill -QUIT安全关闭程序
+	静态网页挂在page
 
 	
 ## Run in Docker

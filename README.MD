@@ -30,6 +30,11 @@ Build:
 git clone https://github.com/viktorika/Webserver.git && cd Webserver
 docker build -t alpine-webserver .
 ```
+or Build by URL:
+```sh
+docker build -t alpine-webserver https://github.com/viktorika/Webserver.git
+```
+
 Run:
 ```sh
 docker run -dit -p 8080:8080 alpine-webserver

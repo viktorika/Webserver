@@ -23,17 +23,17 @@ void Thread::setDefaultName(){
 void* startThread(void *obj){
 	ThreadData* data=(ThreadData *)obj;
 	data->runInThread();
-	delete data;
+	deleteElement<ThreadData>(data);
 	return NULL;
 }
 
 void Thread::start(){
 	assert(!started_);
 	started_=true;
-	ThreadData *data=new ThreadData(func,name_);
+	ThreadData *data=newElement<ThreadData>(func,name_);
 	if(pthread_create(&pthreadId,NULL,&startThread,data)){
 		started_=false;
-		delete data;
+		deleteElement<ThreadData>(data);
 	}
 }
 

@@ -6,10 +6,10 @@ Introduction
 ----
 本项目为C++11写的基于http协议的Web服务器，写这个的目的是为了让半年来看的东西学以致用．
 
-Envoirment
+Environment
 ----
 * OS:Ubuntu 16.04.4
-* Complier: g++ 4.8
+* Compiler: g++ 4.8
 
 ## Build
 

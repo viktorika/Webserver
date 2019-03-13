@@ -4,7 +4,7 @@ LogFile::LogFile(const std::string &Basename,int FlushEveryN)
 :	basename(Basename),
 	flushEveryN(FlushEveryN),
 	count(0),
-	file(new FileUtil(basename))
+	file(newElement<FileUtil>(basename),deleteElement<FileUtil>)
 {
 
 }

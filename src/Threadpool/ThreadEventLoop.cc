@@ -1,8 +1,8 @@
 #include "ThreadEventLoop.h"
 
 ThreadEventLoop::ThreadEventLoop()
-:	loop(new EventLoop()),
-	thread(new Thread(std::bind(&ThreadEventLoop::Loop,this)))
+:	loop(newElement<EventLoop>(),deleteElement<EventLoop>),
+	thread(newElement<Thread>(std::bind(&ThreadEventLoop::Loop,this)),deleteElement<Thread>)
 {
 	
 }

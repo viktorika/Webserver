@@ -23,14 +23,6 @@ struct ThreadData{
     void runInThread(){
         func();
  	}
-	
-	static void* operator new(size_t){
-		return use_memory(7);
-	}	
-	
-	static void operator delete(void *p){
-		free_memory(7,p);
-	}
 };
 
 class Thread:noncopyable{
@@ -42,13 +34,6 @@ public:
 	int join();
 	bool started()const;
 	const std::string& name()const;
-	static void* operator new(size_t size){
-		return use_memory(9);
-	}
-
-	static void operator delete(void *p){
-		free_memory(9,p);
-	}
 
 private:
 	void setDefaultName();
@@ -60,4 +45,4 @@ private:
 };
 
 typedef std::shared_ptr<Thread> SP_Thread;
-typedef std::unique_ptr<Thread> UP_Thread;
+typedef std::unique_ptr<Thread,decltype(deleteElement<Thread>)*> UP_Thread;

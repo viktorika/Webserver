@@ -1,9 +1,9 @@
 #include "Server.h"
 
 Server::Server(const char * port,int threadnum)
-:	loop(new EventLoop()),
-	serverchannel(new Channel(loop)),
-	iothreadpool(new ThreadpoolEventLoop(threadnum))
+:	loop(newElement<EventLoop>(),deleteElement<EventLoop>),
+	serverchannel(newElement<Channel>(loop),deleteElement<Channel>),
+	iothreadpool(newElement<ThreadpoolEventLoop>(threadnum),deleteElement<ThreadpoolEventLoop>)
 {
 	listenfd=tcp_listen(NULL,port,NULL);
 	setnonblocking(listenfd);
@@ -22,12 +22,12 @@ void Server::handleconn(){
 		LOG<<"accept fd="<<connfd;
 		setnonblocking(connfd);
 		SP_EventLoop nextloop=iothreadpool->getNextloop();
-		SP_Channel connchannel(new Channel(nextloop));
+		SP_Channel connchannel(newElement<Channel>(nextloop),deleteElement<Channel>);
 		connchannel->setFd(connfd);
 		connchannel->setRevents(EPOLLIN|EPOLLET);
 		WP_Channel wpchannel=connchannel;
 		connchannel->setClosehandler(bind(&Server::handleclose,this,wpchannel));
-		SP_Http_conn connhttp(new Http_conn(connchannel));
+		SP_Http_conn connhttp(newElement<Http_conn>(connchannel),deleteElement<Http_conn>);
 		Httpmap[connfd]=move(connhttp);
 		nextloop->queueInLoop(bind(&EventLoop::addPoller,nextloop,move(connchannel)));
 	}

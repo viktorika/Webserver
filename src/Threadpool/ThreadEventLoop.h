@@ -11,13 +11,6 @@ private:
 	void Loop();
 
 public:
-	static void* operator new(size_t size){
-		return use_memory(2);
-	}
-
-	static void operator delete(void *p){
-		free_memory(2,p);
-	}
 	ThreadEventLoop();
 	~ThreadEventLoop();
 	void start();

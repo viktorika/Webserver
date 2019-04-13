@@ -1,0 +1,11 @@
+version: '3'
+services:
+    vikserver:
+      container_name: vikserver
+      image: visnz/vikserver
+      restart: always
+      #volumes: 
+      #  - /PATH/TO/YOUR.conf:/opt/conf/Webserver.conf 
+      #  - /PATH/TO/WEBPAGE/:/opt/page/ 
+      ports:
+        - "80:8080"

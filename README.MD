@@ -25,24 +25,35 @@ Environment
 	
 ## Run in Docker
 
-Build:
+### Build
 ```sh
 git clone https://github.com/viktorika/Webserver.git && cd Webserver
-docker build -t alpine-webserver .
+docker build -t vikserver .
 ```
 or Build by URL:
 ```sh
-docker build -t alpine-webserver https://github.com/viktorika/Webserver.git
+docker build -t vikserver https://github.com/viktorika/Webserver.git
 ```
 
-Run:
+### Run
 ```sh
-docker run -dit -p 8080:8080 alpine-webserver
 # Apply you own config file
-docker run -dit -p 8080:8080 -v /path/to/your.conf:/opt/conf/Webserver.conf alpine-webserver
+docker run \
+	-dit \
+	--rm \
+    -p 80:8080 \
+	-v /PATH/TO/YOUR.conf:/opt/conf/Webserver.conf \
+	-v /PATH/TO/WEBPAGE/:/opt/page/ \
+	--name=vikserver
+	vikserver
 ```
 
+Or Pull from [Dockerhub](https://hub.docker.com/r/visnz/vikserver): ``docker pull visnz/vikserver``
 
+Or Run by ``docker-compose.yaml``:
+```sh
+docker-compose up
+```
 	
 Technical points
 ----

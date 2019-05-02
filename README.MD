@@ -68,3 +68,4 @@ Technical points
 * 参考muduo用双缓冲技术实现Log日志.
 * 实现自己的内存池，进一步优化性能
 * 实现了LFU缓存，加快访问速度
+* 通过openssl接口支持ssl协议

@@ -1,3 +1,4 @@
+
 #include "MemoryPool.h"
 
 MemoryPool::MemoryPool(){
@@ -10,7 +11,6 @@ void MemoryPool::init(int size){
 }
 
 MemoryPool::~MemoryPool(){
-	printf("Memory release!\n");
 	Slot* curr=currentBlock;
 	while(curr){
 		Slot* prev=curr->next;

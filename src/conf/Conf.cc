@@ -6,6 +6,10 @@
 #define DEFAULT_STORAGE "page/"
 #define DEFAULT_KEEP_ALIVED 20000
 #define DEFAULT_LOGFILE "log/WebServer.log"
+#define DEFAULT_CAPACITY 10
+#define DEFAULT_SSL false
+#define DEFAULT_SSLCRTPATH "ssl/ca.crt"
+#define DEFAULT_SSLKEYPATH "ssl/ca.key"
 
 int Conf::getio_thread(){
 	return io_thread;
@@ -33,6 +37,18 @@ string Conf::getlogfile(){
 
 int Conf::getcapacity(){
 	return capacity;
+}
+
+bool Conf::getssl(){
+	return ssl;
+}
+
+string Conf::getsslcrtpath(){
+	return sslcrtpath;
+}
+
+string Conf::getsslkeypath(){
+	return sslkeypath;
 }
 
 int Conf::getpos(string &buf,int start,int end,bool flag){
@@ -111,7 +127,19 @@ void Conf::init(char *path){
 	if(m.find("capacity")!=m.end())
 		capacity=stoi(m["capacity"]);
 	else
-		capacity=10;
+		capacity=DEFAULT_CAPACITY;
+	if(m.find("ssl")!=m.end())
+		ssl=("1"==m["ssl"]);
+	else
+		ssl=DEFAULT_SSL;
+	if(m.find("sslcrtpath")!=m.end())
+		sslcrtpath=m["sslcrtpath"];
+	else
+		sslcrtpath=DEFAULT_SSLCRTPATH;
+	if(m.find("sslkeypath")!=m.end())
+		sslkeypath=m["sslkeypath"];
+	else
+		sslkeypath=DEFAULT_SSLKEYPATH;
 }
 
 Conf& getconf(){

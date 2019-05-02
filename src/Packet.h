@@ -15,6 +15,10 @@
 #include <fcntl.h>
 #include <string>
 #include <netdb.h>
+#include <openssl/bio.h>
+#include <openssl/ssl.h>  
+#include <openssl/err.h>
+
 
 #define MAXLINE 4096 
 
@@ -40,3 +44,5 @@ int Close(int sockfd);
 int Setsockopt(int sockfd,int level,int optname,const void *optval,socklen_t optlen);
 int tcp_listen(const char *hostname,const char *service,socklen_t *addrlenp);
 int Eventfd(unsigned int initval,int flags);
+ssize_t SSL_readn(SSL* ssl,std::string &inbuffer,bool &zero);
+ssize_t SSL_writen(SSL* ssl,const void *vptr,size_t n);

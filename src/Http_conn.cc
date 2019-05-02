@@ -119,7 +119,11 @@ PARSESTATE Http_conn::parseSuccess(){
 
 void Http_conn::parse(){
 	bool zero=false;
-    int readsum=readn(channel->getFd(),inbuffer,zero);
+	int readsum;
+	if(getconf().getssl())
+		readsum=SSL_readn(channel->getssl().get(),inbuffer,zero);
+	else
+    	readsum=readn(channel->getFd(),inbuffer,zero);
     if(readsum<0||zero){
         initmsg();
         channel->setDeleted(true);
@@ -161,8 +165,14 @@ void Http_conn::send(){
 		}
 	}
 	const char *buffer=outbuffer.c_str();
-	if(!writen(channel->getFd(),buffer,outbuffer.length()))
-		LOG<<"writen error";
+	if(getconf().getssl()){
+		if(!SSL_writen(channel->getssl().get(),buffer,outbuffer.length()))
+			LOG<<"ssl writen error";
+	}
+	else{
+		if(!writen(channel->getFd(),buffer,outbuffer.length()))
+			LOG<<"writen error";
+	}
 	initmsg();
 	channel->setRevents(EPOLLIN|EPOLLET);
 	channel->getLoop().lock()->updatePoller(channel);
@@ -182,8 +192,14 @@ void Http_conn::handleError(int errornum,string msg){//暂时统一用400,Bad Re
     outbuffer += "\r\n";	
 	outbuffer +=body;
     const char *buffer=outbuffer.c_str();
-    if(!writen(channel->getFd(),buffer,outbuffer.length()))
-        LOG<<"writen error";
+	if(getconf().getssl()){
+		if(!SSL_writen(channel->getssl().get(),buffer,outbuffer.length()))
+            LOG<<"ssl writen error";
+	}
+	else{
+    	if(!writen(channel->getFd(),buffer,outbuffer.length()))
+        	LOG<<"writen error";
+	}
     channel->setRevents(EPOLLIN|EPOLLET);
     channel->getLoop().lock()->updatePoller(channel);
 }

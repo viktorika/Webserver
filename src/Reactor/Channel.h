@@ -7,9 +7,15 @@
 #include "../log/Logging.h"
 #include "../MemoryPool/MemoryPool.h"
 
+#include "openssl/bio.h"
+#include "openssl/ssl.h"
+#include "openssl/err.h"
+
+
 class EventLoop;
 typedef std::shared_ptr<EventLoop> SP_EventLoop;
 typedef std::weak_ptr<EventLoop> WP_EventLoop;
+typedef std::shared_ptr<SSL> SP_SSL;
 
 class Channel{
 private:
@@ -19,6 +25,8 @@ private:
 	int revents;
 	bool deleted;
 	bool First;
+	SP_SSL ssl;
+	bool sslconnect;
 	WP_EventLoop loop;
 	CallBack readhandler;
 	CallBack writehandler;
@@ -31,6 +39,8 @@ public:
 	void setWritehandler(CallBack &&writeHandler);
 	void setClosehandler(CallBack &&closeHandler);
 	void setDeleted(bool Deleted);
+	void setssl(SP_SSL SSL);
+	void setsslconnect(bool ssl_connect);
 	void handleEvent();
 	void handleClose();
 	void setFd(int Fd);
@@ -41,6 +51,8 @@ public:
 	int getFd();
 	int getRevents();
 	bool isDeleted();
+	SP_SSL getssl();
+	bool getsslconnect();
 	WP_EventLoop getLoop();
 };
 

@@ -54,6 +54,14 @@ void Channel::setEvents(int Events){
 	events=Events;
 }
 
+void Channel::setssl(SP_SSL SSL){
+	ssl=SSL;
+}
+
+void Channel::setsslconnect(bool ssl_connect){
+	sslconnect=ssl_connect;
+}
+
 int Channel::getFd(){
 	return fd;
 }
@@ -72,4 +80,12 @@ bool Channel::isFirst(){
 
 WP_EventLoop Channel::getLoop(){
 	return loop;
+}
+
+SP_SSL Channel::getssl(){
+	return ssl;
+}
+
+bool Channel::getsslconnect(){
+	return sslconnect;
 }

@@ -7,7 +7,7 @@ g11=g++ -std=c++11
 path=/usr/local/WebServer
 
 WebServer:$(objects)
-	$(g11) -o WebServer $(objects) -lpthread
+	$(g11) -o WebServer $(objects) -lpthread -lssl
 
 $(objects):$(origins)
 	$(g11) -g -c $(origins)

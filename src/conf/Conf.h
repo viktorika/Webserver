@@ -18,6 +18,9 @@ private:
 	string storage;
 	string logfile;
 	int capacity;	
+	bool ssl;
+	string sslcrtpath;
+	string sslkeypath;
 
 public:
 	void init(char *path);
@@ -28,6 +31,9 @@ public:
 	string getlogfile();
 	int getkeep_alived();
 	int getcapacity();
+	bool getssl();
+	string getsslcrtpath();
+	string getsslkeypath();
 	Conf();
 
 private:	

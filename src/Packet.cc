@@ -93,6 +93,30 @@ ssize_t readn(int fd,std::string &inbuffer,bool &zero){
 	}
 	return readSum;
 }
+ssize_t SSL_readn(SSL* ssl,std::string &inbuffer,bool &zero){
+	ssize_t nread;
+	ssize_t readSum=0;
+	while(true){
+		char buff[MAXLINE];
+		if((nread=SSL_read(ssl, buff, sizeof(buff)))<0){
+			if(EINTR==errno)
+                continue;
+            else if(EAGAIN==errno)
+                return readSum;
+            else{
+                fprintf(stderr,"read error\n");
+                return -1;
+            }
+		}
+		else if(!nread){
+			zero=true;
+			break;
+		}
+		readSum+=nread;
+		inbuffer+=std::string(buff,buff+nread);
+	}
+	return readSum;
+}
 
 ssize_t writen(int fd,const void *vptr,size_t n){
 	size_t nleft;
@@ -110,6 +134,25 @@ ssize_t writen(int fd,const void *vptr,size_t n){
 		ptr+=nwritten;
 	}
 	return n;
+}
+
+ssize_t SSL_writen(SSL* ssl,const void *vptr,size_t n){
+	size_t nleft;
+    ssize_t nwritten;
+    const char *ptr=(char *)vptr;
+    nleft=n;
+    while(nleft>0){
+        if((nwritten=SSL_write(ssl,ptr,nleft))<=0){
+            if(nwritten<0&&EINTR==errno)
+                nwritten=0;
+            else
+                return -1;
+        }
+        nleft-=nwritten;
+        ptr+=nwritten;
+    }
+    return n;
+	
 }
 
 int Open(const char *pathname,int oflags,mode_t mode){

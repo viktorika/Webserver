@@ -10,6 +10,7 @@ Environment
 ----
 * OS:Ubuntu 16.04.4
 * Compiler: g++ 4.8
+* openssl
 
 ## Build
 
